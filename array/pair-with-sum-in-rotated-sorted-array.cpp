@@ -1,5 +1,6 @@
 // C++ program to find a pair with a given sum in a sorted and
 // rotated array
+// Solves the problem in O(n) using modular arithmetic
 #include <iostream>
 using namespace std;
 
