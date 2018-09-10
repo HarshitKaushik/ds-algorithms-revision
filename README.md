@@ -1,2 +1,2 @@
 # ds-algorithms-revision
-Revision of Data Structure And Algorithms
+Revision of Data Structures And Algorithms
