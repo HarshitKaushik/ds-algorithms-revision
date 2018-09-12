@@ -1,4 +1,6 @@
 #include <iostream>
+#include <climits>
+#include <cstdlib>
 using namespace std;
 
 // K’th Smallest Element in Unsorted Array
@@ -6,7 +8,9 @@ using namespace std;
 // to find the k’th smallest element in the given array. It is given that all
 // array elements are distinct
 
-// Reference link: https://www.geeksforgeeks.org/kth-smallestlargest-element-unsorted-array/
+// Reference links: https://www.geeksforgeeks.org/kth-smallestlargest-element-unsorted-array/
+// https://www.geeksforgeeks.org/kth-smallestlargest-element-unsorted-array-set-2-expected-linear-time/
+// https://www.geeksforgeeks.org/k-largestor-smallest-elements-in-an-array/
 
 // Input: arr[] = {7, 10, 4, 3, 20, 15}
 // k = 3
@@ -154,8 +158,8 @@ int kthSmallest(int arr[], int n, int k)
 // A class for Max Heap
 class MaxHeap
 {
-  int *harr;     // pointer to array of elements in heap
-  int capacity;  // maximum possible size of max heap
+  int *harr;    // pointer to array of elements in heap
+  int capacity; // maximum possible size of max heap
   int heapSize; // Current number of elements in max heap
 public:
   MaxHeap(int a[], int size); // Constructor
@@ -237,6 +241,74 @@ int kthSmallestFromMaxHeap(int arr[], int n, int k)
   return mh.getMax();
 }
 
+// Approach 4
+
+// Randomized QuickSelect algorithm
+// The idea is to randomly pick a pivot element. To implement randomized
+// partition, we use a random function, rand() to generate index between l and
+// r, swap the element at randomly generated index with the last element, and
+// finally call the standard partition process which uses last element as pivot.
+
+// The worst case time complexity of the above solution is still O(n^2). In
+// worst case, the randomized function may always pick a corner element. The
+// expected time complexity of above randomized QuickSelect is O(n)
+
+int randomPartition(int arr[], int l, int r);
+
+// This function returns kth smallest element in arr[l..r] using
+// QuickSort based method.
+// ASSUMPTION: ELEMENTS IN ARR[] ARE DISTINCT
+int kthSmallestRandomizedQuickSelect(int arr[], int l, int r, int k)
+{
+  // If k is smaller than number of elements in array
+  if (k > 0 && k <= r - l + 1)
+  {
+    // Partition the array around a random element and
+    // get position of pivot element in sorted array
+    int pos = randomPartition(arr, l, r);
+    // If position is same as k
+    if (pos - l == k - 1)
+      return arr[pos];
+    // If position is more, recur for left subarray
+    if (pos - l > k - 1)
+      return kthSmallestRandomizedQuickSelect(arr, l, pos - 1, k);
+    // Else recur for right subarray
+    return kthSmallestRandomizedQuickSelect(arr, pos + 1, r, k - pos + l - 1);
+  }
+  // If k is more than the number of elements in the array
+  return INT_MAX;
+}
+
+// Standard partition process of QuickSort().  It considers the last
+// element as pivot and moves all smaller element to left of it and
+// greater elements to right. This function is used by randomPartition()
+int partitionQuickSort(int arr[], int l, int r)
+{
+  int x = arr[r], i = l;
+  for (int j = l; j <= r - 1; j++)
+  {
+    if (arr[j] <= x)
+    {
+      swapValues(&arr[i], &arr[j]);
+      i++;
+    }
+  }
+  swapValues(&arr[i], &arr[r]);
+  return i;
+}
+
+// Picks a random pivot element between l and r and partitions
+// arr[l..r] around the randomly picked element using partition()
+int randomPartition(int arr[], int l, int r)
+{
+  int n = r - l + 1;
+  int pivot = rand() % n;
+  swapValues(&arr[l + pivot], &arr[r]);
+  return partitionQuickSort(arr, l, r);
+}
+
+// 
+
 // Driver program
 int main()
 {
@@ -264,6 +336,15 @@ int main()
   int kthMin2 = kthSmallestFromMaxHeap(testArray3, size3, k3);
   cout << "The kth smallest element:\n"
        << kthMin2 << endl;
+  // Output:
+  // The kth smallest element:
+  // 7
+  int testArray4[] = {7, 10, 4, 3, 20, 15};
+  int size4 = 6;
+  int k4 = 3;
+  int kthMin3 = kthSmallestRandomizedQuickSelect(testArray4, 0, size4 - 1, k4);
+  cout << "The kth smallest element:\n"
+       << kthMin3 << endl;
   // Output:
   // The kth smallest element:
   // 7
