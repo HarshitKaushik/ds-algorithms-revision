@@ -44,6 +44,15 @@ void modifiedBubbleSort(int testArray[], int size, int k) {
   cout << endl;
 }
 
+// Approach 2
+// Use a O(n log n) sorting algorithm and print k largest elements in the array
+// Time complexity - O(n log n)
+
+// Approach 3
+// Use Max Heap
+// Build a Max Heap tree in O(n) and use Extract Max k times to get k maximum elements from the Max Heap O(k logn)
+// Time complexity O(n + k log n)
+
 // Driver program
 int main() {
   int testArray1[] = {1, 5, 6, 7, 8, 28, 2, 5};
